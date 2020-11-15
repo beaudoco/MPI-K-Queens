@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1605465871 source:c:\users\bring\onedrive\documents\cis-677\hw-7\n-queens\main.c
+	<stdbool.h>
+	<stdio.h>
+	<string.h>
+
