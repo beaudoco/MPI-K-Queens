@@ -10,7 +10,7 @@
 #define MSGSIZE 100
 #define MAX 25
 // N x N chessboard
-#define N 14
+#define N 8
 
 // Function to check if two queens threaten each other or not
 bool isValid(int mat[][N], int col, int row)
@@ -58,18 +58,18 @@ void findKQueen(int mat[][N], int col, int argc, char* argv[])
             {
                 if (mat[i][j] == 1)
                 {
-                    //printf("%d,", j);
+                    printf("%d,", j);
                 }
 			}
 		}
-		//printf("\n \n");
+		printf("\n \n");
 
 		return;
 	}
 
 	// place Queen at every square in current row r
 	// and recur for each valid movement
-    if (col > 0) {
+    if (col != 1) {
         for (int i = 0; i < N; i++)
         {
             // if no two queens threaten each other
@@ -85,9 +85,13 @@ void findKQueen(int mat[][N], int col, int argc, char* argv[])
                 mat[col][i] = 0;
             }
         }
+        if (col == 0)
+        {
+            MPI_Finalize();
+        }
     }
 
-    if (col == 0) {
+    if (col == 1) {
         int my_rank, source, num_nodes;
         char my_host[MAX];
         char message[MSGSIZE];
@@ -111,6 +115,7 @@ void findKQueen(int mat[][N], int col, int argc, char* argv[])
                 mat[col][my_rank] = 0;
             }
             MPI_Send(message, strlen(message) + 1, MPI_CHAR, MASTER, TAG, MPI_COMM_WORLD);
+            MPI_Barrier(MPI_COMM_WORLD);
 
         }
         else {
@@ -132,9 +137,8 @@ void findKQueen(int mat[][N], int col, int argc, char* argv[])
                 MPI_Recv(message, MSGSIZE, MPI_CHAR, source, TAG, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                 // printf("%s\n", message);
             }
-        }
-
-        MPI_Finalize();
+            MPI_Barrier(MPI_COMM_WORLD);
+        }        
     }
 }
 
